@@ -1,0 +1,155 @@
+@import "~taro-ui/dist/style/index.scss";
+
+.page {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.index-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+
+  // 顶部导航栏
+  .index-header {
+    display: flex;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: #fff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    &__left,
+    &__right {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+    }
+
+    &__search {
+      flex: 1;
+      margin: 0 20px;
+    }
+  }
+
+  // 滚动区域
+  .index-scroll {
+    height: calc(100vh - 100px);
+  }
+
+  // 区块样式
+  .section {
+    margin-bottom: 20px;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 30px;
+
+      .section-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .section-subtitle {
+        font-size: 24px;
+        color: #999;
+      }
+
+      .section-more {
+        display: flex;
+        align-items: center;
+        font-size: 24px;
+        color: #999;
+      }
+    }
+  }
+
+  // 分类区块
+  .section-categories {
+    background-color: #fff;
+    border-radius: 16px;
+    margin: 20px;
+    overflow: hidden;
+  }
+
+  // 门店区块
+  .section-store {
+    padding: 0;
+  }
+
+  // 热门推荐区块
+  .section-hot {
+    background-color: #fff;
+    padding: 20px 0;
+
+    .product-scroll__header {
+      padding: 0 30px 20px;
+    }
+  }
+
+  // 商品列表区块
+  .section-products {
+    background-color: #fff;
+    border-radius: 16px 16px 0 0;
+    margin: 0;
+    padding-top: 20px;
+  }
+
+  // 底部安全区域
+  .safe-area-bottom {
+    height: constant(safe-area-inset-bottom);
+    height: env(safe-area-inset-bottom);
+    min-height: 100px;
+  }
+}
+
+// 覆盖 at-search-bar 样式（需要在 :global 外单独定义）
+:global(.at-search-bar) {
+  background-color: transparent;
+  padding: 0;
+}
+
+:global(.at-search-bar__input) {
+  background-color: #f5f5f5;
+  border-radius: 32px;
+}
+
+:global(.at-search-bar__action) {
+  background-color: #FF6B6B;
+  color: #fff;
+  border-radius: 28px;
+  padding: 0 24px;
+  font-size: 24px;
+}
+
+// 覆盖 TabBar 样式
+:global(.at-tab-bar) {
+  background-color: #fff !important;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+}
+
+:global(.at-tab-bar__item) {
+  color: #999;
+}
+
+:global(.at-tab-bar__item--active) {
+  color: #FF6B6B;
+}
+
+// 覆盖 taro-ui 样式
+:global(.at-noticebar) {
+  background: linear-gradient(90deg, rgba(255, 107, 107, 0.1), rgba(78, 205, 196, 0.1));
+  color: #FF6B6B;
+  font-size: 24px;
+}
+
+:global(.at-badge__num) {
+  background-color: #FF6B6B !important;
+}

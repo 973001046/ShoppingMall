@@ -1,0 +1,57 @@
+@import "~taro-ui/dist/style/index.scss";
+
+.category-grid {
+  padding: 20px 0;
+  background-color: #fff;
+  border-radius: 16px;
+  margin: 0 20px;
+}
+
+// 简化版分类网格样式
+.simple-category-grid {
+  padding: 20px 0;
+  background-color: #fff;
+  border-radius: 16px;
+  margin: 0 20px;
+
+  .category-list {
+    display: grid;
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  .category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .category-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .category-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .category-name {
+    margin-top: 12px;
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+  }
+}
