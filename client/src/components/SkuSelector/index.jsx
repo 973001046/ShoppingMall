@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { AtFloatLayout, AtButton } from 'taro-ui';
+import { AtFloatLayout, AtButton, AtInputNumber } from 'taro-ui';
 import './index.scss';
 
 /**
@@ -34,6 +34,8 @@ const SkuSelector = ({
   const [calculatedPrice, setCalculatedPrice] = useState(0);
   // 隐藏的规则
   const [hiddenDimensions, setHiddenDimensions] = useState([]);
+  // 购买数量
+  const [quantity, setQuantity] = useState(1);
 
   // 判断商品是否有 SKU
   const hasSku = skuTemplate?.dimensions && skuTemplate.dimensions.length > 0;
@@ -65,6 +67,8 @@ const SkuSelector = ({
       }
     });
     setSelectedSpecs(defaults);
+    // 根据商品配置设置数量：允许多份则保持当前值或默认为1，不允许多份则强制为1
+    setQuantity(prev => product.allowMultiple === false ? 1 : (prev || 1));
   }, [product, skuTemplate, hasSku]);
 
   // 计算价格和隐藏的规则
@@ -313,6 +317,28 @@ const SkuSelector = ({
             </View>
           </View>
 
+          {/* 数量选择 - 放在商品信息下方 */}
+          {product.allowMultiple !== false && (
+            <View className='sku-body sku-body--simple'>
+              <View className='sku-dimension sku-dimension--quantity'>
+                <View className='sku-dimension__title'>
+                  <Text>数量</Text>
+                </View>
+                <View className='sku-dimension__options sku-dimension__options--quantity'>
+                  <AtInputNumber
+                    type='number'
+                    min={1}
+                    max={99}
+                    step={1}
+                    value={quantity}
+                    onChange={(val) => setQuantity(val)}
+                    className='sku-quantity-input'
+                  />
+                </View>
+              </View>
+            </View>
+          )}
+
           <View className='sku-footer'>
             <AtButton
               type='primary'
@@ -334,9 +360,9 @@ const SkuSelector = ({
       title='选择规格'
       onClose={handleClose}
     >
-      <View className='sku-selector'>
-        {/* 商品信息 */}
-        <View className='sku-header'>
+      <View className='sku-selector sku-selector--fixed'>
+        {/* 商品信息 - 固定头部 */}
+        <View className='sku-header sku-header--fixed'>
           <View className='sku-header__info'>
             <Text className='sku-header__name'>{product?.name || '商品'}</Text>
             <Text className='sku-header__selected'>
@@ -349,8 +375,32 @@ const SkuSelector = ({
           </View>
         </View>
 
-        {/* 规格维度 */}
-        <View className='sku-body'>
+        {/* 规格维度 - 可滚动区域 */}
+        <ScrollView
+          className='sku-body sku-body--scrollable'
+          scrollY
+          scrollWithAnimation
+        >
+          {/* 数量选择 - 作为独立维度放在最上面 */}
+          {product.allowMultiple !== false && (
+            <View className='sku-dimension sku-dimension--quantity'>
+              <View className='sku-dimension__title'>
+                <Text>数量</Text>
+              </View>
+              <View className='sku-dimension__options sku-dimension__options--quantity'>
+                <AtInputNumber
+                  type='number'
+                  min={1}
+                  max={99}
+                  step={1}
+                  value={quantity}
+                  onChange={(val) => setQuantity(val)}
+                  className='sku-quantity-input'
+                />
+              </View>
+            </View>
+          )}
+
           {skuTemplate.dimensions.map((dimension) => {
             // 如果该维度被隐藏，则不渲染
             if (hiddenDimensions.includes(dimension.id)) {
@@ -396,10 +446,12 @@ const SkuSelector = ({
               </View>
             );
           })}
-        </View>
+          {/* 底部安全间距 */}
+          <View className='sku-body__safe-area' />
+        </ScrollView>
 
-        {/* 底部操作栏 */}
-        <View className='sku-footer'>
+        {/* 底部操作栏 - 固定底部 */}
+        <View className='sku-footer sku-footer--fixed'>
           <AtButton
             type='primary'
             size='normal'

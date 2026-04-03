@@ -3,6 +3,36 @@
 .sku-selector {
   padding-bottom: 40px;
 
+  // 固定布局模式：头部和底部固定，中间可滚动
+  &--fixed {
+    display: flex;
+    flex-direction: column;
+    height: 70vh; // 固定高度
+    padding-bottom: 0;
+
+    .sku-header--fixed {
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      z-index: 10;
+    }
+
+    .sku-body--scrollable {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sku-footer--fixed {
+      flex-shrink: 0;
+      position: sticky;
+      bottom: 0;
+      background-color: #fff;
+      z-index: 10;
+    }
+  }
+
   // 简化模式（无SKU）
   &--simple {
     .sku-header {
@@ -12,6 +42,25 @@
         margin-top: 12px;
         margin-bottom: 12px;
       }
+    }
+  }
+
+  // 规格主体
+  .sku-body {
+    padding: 20px 30px;
+
+    &--simple {
+      padding: 20px 30px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    &--scrollable {
+      padding: 20px 30px;
+    }
+
+    // 底部安全间距
+    &__safe-area {
+      height: 40px;
     }
   }
 
@@ -60,8 +109,8 @@
   // 规格主体
   .sku-body {
     padding: 20px 30px;
-    max-height: 600px;
-    overflow-y: auto;
+    // max-height: 600px;
+    // overflow-y: auto;
   }
 
   // 规格维度
@@ -88,7 +137,24 @@
       display: flex;
       flex-wrap: wrap;
       gap: 16px;
+
+      // 数量选择特殊布局
+      &--quantity {
+        padding: 10px 0;
+      }
     }
+
+    // 数量维度特殊样式
+    &--quantity {
+      .sku-dimension__title {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  // 数量输入框样式
+  .sku-quantity-input {
+    width: 200px;
   }
 
   // 规格选项

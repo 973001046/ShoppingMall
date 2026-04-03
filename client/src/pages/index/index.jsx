@@ -333,14 +333,26 @@ const Index = () => {
       />
 
       {/* SKU 规格选择器 */}
-      <SkuSelector
+      {
+        skuSelectorOpen && (
+          <SkuSelector
+            isOpen={skuSelectorOpen}
+            product={selectedProduct}
+            skuTemplate={skuTemplate}
+            onClose={() => setSkuSelectorOpen(false)}
+            onConfirm={handleSkuConfirm}
+            onDirectAdd={handleDirectAdd}
+          />
+        )
+      }
+      {/* <SkuSelector
         isOpen={skuSelectorOpen}
         product={selectedProduct}
         skuTemplate={skuTemplate}
         onClose={() => setSkuSelectorOpen(false)}
         onConfirm={handleSkuConfirm}
         onDirectAdd={handleDirectAdd}
-      />
+      /> */}
     </View>
   );
 };

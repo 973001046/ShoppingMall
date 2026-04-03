@@ -206,6 +206,7 @@ export const mockProducts = [
     categoryId: 1,
     tag: '爆款',
     sales: 1523,
+    allowMultiple: true, // 允许多份购买
     skuTemplate: 'coffee',
     specs: {
       default: {
@@ -222,6 +223,7 @@ export const mockProducts = [
     description: '植物基燕麦奶，健康新选择',
     price: 24,
     originalPrice: 30,
+    allowMultiple: true,
     imageUrl: 'https://via.placeholder.com/300x300/4ECDC4/FFFFFF?text=燕麦拿铁',
     categoryId: 1,
     tag: '新品',
@@ -246,6 +248,7 @@ export const mockProducts = [
     categoryId: 2,
     tag: '人气',
     sales: 2341,
+    allowMultiple: true,
     skuTemplate: 'tea',
     specs: {
       default: {
@@ -265,6 +268,7 @@ export const mockProducts = [
     categoryId: 3,
     tag: '健康',
     sales: 567,
+    allowMultiple: true,
     skuTemplate: 'food',
     specs: {
       default: {
@@ -283,6 +287,7 @@ export const mockProducts = [
     categoryId: 4,
     tag: '甜点',
     sales: 789,
+    allowMultiple: false, // 不允许多份购买
     skuTemplate: null
   },
   {
@@ -295,6 +300,7 @@ export const mockProducts = [
     categoryId: 1,
     tag: '超值',
     sales: 3456,
+    allowMultiple: true,
     skuTemplate: 'coffee',
     specs: {
       default: {
