@@ -43,6 +43,52 @@ src/
 └── app.less            # 全局样式
 ```
 
+#### 商品组件设计
+
+```
+ProductCard/
+├── ProductCard (单个商品卡片)
+├── ProductGrid (网格布局)
+├── ProductScroll (横向滚动)
+└── ProductListView (列表布局)
+ProductList (统一入口)
+├── layout='grid' → 渲染 ProductGrid
+├── layout='scroll' → 渲染 ProductScroll
+└── layout='list' → 渲染 ProductListView
+```
+
+###### 使用方式：
+
+ 1.统一入口（简洁）：
+ ```
+  <ProductList layout='grid' options={{ columnNum: 2 }} products={products} />
+  <ProductList layout='scroll' options={{ title: '热门' }} products={products} />
+  <ProductList layout='list' products={products} />
+ ```
+
+ 2.直接使用子组件（更细粒度控制）：
+  ```
+    import { ProductGrid, ProductScroll, ProductListView } from '../../components';
+    <ProductGrid columnNum={3} products={products} />
+    <ProductScroll title="推荐" products={products} />
+    <ProductListView products={products} />
+  ```
+
+  ┌──────────────────────────────┐
+  │ ┌──────────┐ ┌─────────────┐ │
+  │ │          │ │ 商品名称      │ │
+  │ │  商品图   │ │ 描述文字...   │ │
+  │ │  240x240 │ │ 已售 1234    │ │
+  │ │          │ │              │ │
+  │ └──────────┘ │ ¥28    [+]   │ │
+  │              └─────────────┘ │
+  ├──────────────────────────────┤  ← 渐变分隔线
+  │ ┌──────────┐ ┌─────────────┐ │
+  │ │          │ │ 商品名称      │ │
+  │ │  商品图   │ │ 描述文字...   │ │
+  │ └──────────┘ └─────────────┘ │
+  └──────────────────────────────┘
+
 ## 快速开始
 
 ### 1. 安装依赖

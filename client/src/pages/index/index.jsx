@@ -1,15 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro';
-import { AtSearchBar, AtNoticebar, AtBadge, AtIcon, AtTabBar } from 'taro-ui';
+import { AtNoticebar, AtIcon, AtTabBar } from 'taro-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
 // 组件
 import {
   Banner,
   SimpleCategoryGrid,
-  ProductGrid,
-  ProductScroll,
+  ProductList,
   StoreEntry,
   LoadMore,
   SkuSelector
@@ -19,7 +18,7 @@ import {
 import { mockApi, mockProducts, mockStores } from '../../mock';
 
 // Redux
-import { addToCart, selectCartItemCount } from '../../store/slices/cartSlice';
+import { addToCart, selectCartItemCount, selectCartItems } from '../../store/slices/cartSlice';
 
 // 样式
 import './index.scss';
@@ -27,9 +26,9 @@ import './index.scss';
 const Index = () => {
   const dispatch = useDispatch();
   const cartCount = useSelector(selectCartItemCount);
+  const cartItems = useSelector(selectCartItems);
 
   // 状态
-  const [searchValue, setSearchValue] = useState('');
   const [banners, setBanners] = useState([]);
   const [categories, setCategories] = useState([]);
   const [hotProducts, setHotProducts] = useState([]);
@@ -115,19 +114,6 @@ const Index = () => {
     }
   });
 
-  // 搜索
-  const handleSearchChange = (value) => {
-    setSearchValue(value);
-  };
-
-  const handleSearch = () => {
-    if (searchValue.trim()) {
-      Taro.navigateTo({
-        url: `/pages/search/result?keyword=${encodeURIComponent(searchValue)}`
-      });
-    }
-  };
-
   // 分类点击
   const handleCategoryClick = (category) => {
     Taro.navigateTo({
@@ -166,7 +152,7 @@ const Index = () => {
   };
 
   // SKU 选择确认（有 SKU）
-  const handleSkuConfirm = ({ product, specs, price, specDescription }) => {
+  const handleSkuConfirm = ({ product, specs, price, specDescription, quantity }) => {
     if (product) {
       const productWithPrice = {
         ...product,
@@ -174,8 +160,8 @@ const Index = () => {
       };
 
       dispatch(addToCart({
+        quantity: quantity || 1,
         product: productWithPrice,
-        quantity: 1,
         specs,
         specDescription
       }));
@@ -192,12 +178,12 @@ const Index = () => {
   };
 
   // 无 SKU 商品直接加入购物车
-  const handleDirectAdd = (product) => {
-    console.log('handleDirectAdd', product);
+  const handleDirectAdd = (product, quantity = 1) => {
+    console.log('handleDirectAdd', product, quantity);
     dispatch(addToCart({
       product,
-      quantity: 1,
-      specs: {},
+      quantity: quantity || 1,
+      specs: null,
       specDescription: '无规格'
     }));
 
@@ -211,43 +197,15 @@ const Index = () => {
     setSkuTemplate(null);
   };
 
-  // 跳转到购物车
-  const goToCart = () => {
-    Taro.navigateTo({
-      url: '/pages/cart/index'
-    });
-  };
-
-  // 跳转到个人中心
-  const goToUserCenter = () => {
-    Taro.switchTab({
-      url: '/pages/user-center/index'
-    });
-  };
+  // 获取商品在购物车中的数量
+  const getCartQuantity = useCallback((productId) => {
+    return cartItems
+      .filter(item => item.productId === productId)
+      .reduce((sum, item) => sum + item.quantity, 0);
+  }, [cartItems]);
 
   return (
     <View className='index-page'>
-      {/* 顶部导航栏 */}
-      <View className='index-header'>
-        <View className='index-header__left'>
-          <AtIcon value='user' size='24' color='#333' onClick={goToUserCenter} />
-        </View>
-        <View className='index-header__search'>
-          <AtSearchBar
-            value={searchValue}
-            onChange={handleSearchChange}
-            onActionClick={handleSearch}
-            placeholder='搜索商品'
-            actionName='搜索'
-          />
-        </View>
-        <View className='index-header__right'>
-          <AtBadge value={cartCount > 0 ? cartCount : ''} maxValue={99}>
-            <AtIcon value='shopping-cart' size='24' color='#333' onClick={goToCart} />
-          </AtBadge>
-        </View>
-      </View>
-
       <ScrollView
         className='index-scroll'
         scrollY
@@ -284,11 +242,13 @@ const Index = () => {
         {/* 热门推荐（横向滚动） */}
         {hotProducts.length > 0 && (
           <View className='section section-hot'>
-            <ProductScroll
-              title='🔥 热门推荐'
+            <ProductList
+              layout='scroll'
+              options={{ title: '🔥 热门推荐' }}
               products={hotProducts}
               onItemClick={handleProductClick}
               onAddToCart={handleAddToCart}
+              getCartQuantity={getCartQuantity}
             />
           </View>
         )}
@@ -299,12 +259,14 @@ const Index = () => {
             <Text className='section-title'>🌟 为你推荐</Text>
             <Text className='section-subtitle'>精选好物，品质保证</Text>
           </View>
-          <ProductGrid
+          
+          <ProductList
+            layout='grid'
+            options={{ columnNum: 2, gutter: 10 }}
             products={products}
-            columnNum={2}
-            gutter={20}
             onItemClick={handleProductClick}
             onAddToCart={handleAddToCart}
+            getCartQuantity={getCartQuantity}
           />
 
           {/* 加载更多 */}

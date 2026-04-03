@@ -155,5 +155,11 @@ export const selectSelectedTotal = (state) => {
     .filter(item => item.selected)
     .reduce((sum, item) => sum + (item.price * item.quantity), 0);
 };
+// 获取指定商品的购物车总数量（所有规格合计）
+export const selectCartQuantityByProductId = (productId) => (state) => {
+  return state.cart.items
+    .filter(item => item.productId === productId)
+    .reduce((sum, item) => sum + item.quantity, 0);
+};
 
 export default cartSlice.reducer;

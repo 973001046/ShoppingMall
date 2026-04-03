@@ -1,6 +1,6 @@
 import { View, Image, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { AtTag, AtButton } from 'taro-ui';
+import { AtTag, AtButton, AtIcon } from 'taro-ui';
 import './index.scss';
 
 /**
@@ -9,6 +9,7 @@ import './index.scss';
  * @param {String} layout - 布局方式: 'vertical' | 'horizontal'
  * @param {Boolean} showTag - 是否显示标签
  * @param {Boolean} showSales - 是否显示销量
+ * @param {Number} cartQuantity - 购物车中的数量
  * @param {Function} onClick - 点击回调
  * @param {Function} onAddToCart - 加入购物车回调
  */
@@ -17,6 +18,7 @@ const ProductCard = ({
   layout = 'vertical',
   showTag = true,
   showSales = true,
+  cartQuantity = 0,
   onClick,
   onAddToCart
 }) => {
@@ -86,15 +88,23 @@ const ProductCard = ({
             )}
           </View>
 
-          <AtButton
-            className='product-card__add-btn'
-            size='small'
-            type='primary'
-            circle
-            onClick={handleAddToCart}
-          >
-            +
-          </AtButton>
+          <View className='product-card__cart-wrapper' onClick={handleAddToCart}>
+            <AtButton
+              className='product-card__add-btn'
+              size='small'
+              type='primary'
+              circle
+            >
+              <AtIcon value='shopping-cart' size='small' color='#fff' />
+            </AtButton>
+            {cartQuantity > 0 && (
+              <View className='product-card__cart-badge'>
+                <Text className='product-card__cart-badge-text'>
+                  {cartQuantity > 99 ? '99+' : cartQuantity}
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
       </View>
     </View>
@@ -107,7 +117,8 @@ export const ProductGrid = ({
   columnNum = 2,
   gutter = 20,
   onItemClick,
-  onAddToCart
+  onAddToCart,
+  getCartQuantity
 }) => {
   return (
     <View
@@ -122,6 +133,7 @@ export const ProductGrid = ({
           key={product.id}
           product={product}
           layout='vertical'
+          cartQuantity={getCartQuantity ? getCartQuantity(product.id) : 0}
           onClick={onItemClick}
           onAddToCart={onAddToCart}
         />
@@ -135,7 +147,8 @@ export const ProductScroll = ({
   products = [],
   title,
   onItemClick,
-  onAddToCart
+  onAddToCart,
+  getCartQuantity
 }) => {
   return (
     <View className='product-scroll'>
@@ -152,12 +165,36 @@ export const ProductScroll = ({
               layout='vertical'
               showTag={false}
               showSales={false}
+              cartQuantity={getCartQuantity ? getCartQuantity(product.id) : 0}
               onClick={onItemClick}
               onAddToCart={onAddToCart}
             />
           </View>
         ))}
       </View>
+    </View>
+  );
+};
+
+// 商品列表（列表布局）
+export const ProductListView = ({
+  products = [],
+  onItemClick,
+  onAddToCart,
+  getCartQuantity
+}) => {
+  return (
+    <View className='product-list-view'>
+      {products.map((product) => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          layout='horizontal'
+          cartQuantity={getCartQuantity ? getCartQuantity(product.id) : 0}
+          onClick={onItemClick}
+          onAddToCart={onAddToCart}
+        />
+      ))}
     </View>
   );
 };

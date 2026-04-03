@@ -7,19 +7,19 @@
 export const mockBanners = [
   {
     id: 1,
-    imageUrl: 'https://via.placeholder.com/750x300/FF6B6B/FFFFFF?text=新品上市',
+    imageUrl: 'https://picsum.photos/seed/848989ed53776bc1e1e1b1d60ab77c32/750/500?text=新品上市',
     linkUrl: '/pages/detail/detail?id=1',
     title: '新品上市'
   },
   {
     id: 2,
-    imageUrl: 'https://via.placeholder.com/750x300/4ECDC4/FFFFFF?text=限时特惠',
+    imageUrl: 'https://picsum.photos/seed/848989ed53776bc1e1e1b1d60ab77c32/750/500?text=限时特惠',
     linkUrl: '/pages/detail/detail?id=2',
     title: '限时特惠'
   },
   {
     id: 3,
-    imageUrl: 'https://via.placeholder.com/750x300/95E1D3/FFFFFF?text=会员专享',
+    imageUrl: 'https://picsum.photos/seed/848989ed53776bc1e1e1b1d60ab77c32/750/500?text=会员专享',
     linkUrl: '/pages/detail/detail?id=3',
     title: '会员专享'
   }
@@ -199,7 +199,7 @@ export const mockProducts = [
   {
     id: 1,
     name: '生椰拿铁',
-    description: '浓郁咖啡与清甜椰乳的完美融合',
+    description: '浓郁咖啡与清甜椰乳的完美融合浓郁咖啡与清甜椰乳的完美融合浓郁咖啡与清甜椰乳的完美融合',
     price: 22,
     originalPrice: 28,
     imageUrl: 'https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=生椰拿铁',
@@ -295,7 +295,7 @@ export const mockProducts = [
     name: '美式咖啡',
     description: '经典美式，纯粹醇香',
     price: 15,
-    originalPrice: 18,
+    originalPrice: 1800,
     imageUrl: 'https://via.placeholder.com/300x300/FFD93D/FFFFFF?text=美式咖啡',
     categoryId: 1,
     tag: '超值',

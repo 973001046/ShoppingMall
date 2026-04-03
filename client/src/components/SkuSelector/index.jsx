@@ -257,7 +257,7 @@ const SkuSelector = ({
     if (!hasSku) {
       // 无 SKU 商品直接回调
       if (onDirectAdd) {
-        onDirectAdd(product);
+        onDirectAdd(product, quantity);
       }
       return;
     }
@@ -285,7 +285,8 @@ const SkuSelector = ({
         product,
         specs: finalSpecs,
         price: calculatedPrice,
-        specDescription: getSpecDescription()
+        specDescription: getSpecDescription(),
+        quantity
       });
     }
   };

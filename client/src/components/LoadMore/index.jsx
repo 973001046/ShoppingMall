@@ -25,7 +25,7 @@ const LoadMore = ({
   if (status === 'noMore') {
     return (
       <View className='load-more load-more--no-more'>
-        <AtDivider content={noMoreText} fontColor='#ccc' lineColor='#eee' />
+        <AtDivider content={noMoreText} fontColor='#ccc' lineColor='#eee' fontSize='22' />
       </View>
     );
   }
