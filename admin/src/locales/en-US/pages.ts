@@ -1,4 +1,13 @@
 export default {
+  'menu.dashboard': 'Dashboard',
+  'pages.dashboard.title': 'Dashboard',
+  'pages.dashboard.timeRange': 'Time Range',
+  'pages.dashboard.newUsers': 'New Users',
+  'pages.dashboard.totalAmount': 'Total Amount',
+  'pages.dashboard.totalOrders': 'Total Orders',
+  'pages.dashboard.userTrend': 'User Registration Trend',
+  'pages.dashboard.orderStats': 'Order Statistics',
+  'pages.dashboard.topProducts': 'Top 10 Products',
   'pages.layouts.userLayout.title':
     'Ant Design is the most influential web design specification in Xihu district',
   'pages.login.accountLogin.tab': 'Account Login',

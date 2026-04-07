@@ -1,4 +1,13 @@
 export default {
+  'menu.dashboard': '数据概览',
+  'pages.dashboard.title': '数据概览',
+  'pages.dashboard.timeRange': '时间范围',
+  'pages.dashboard.newUsers': '新增用户',
+  'pages.dashboard.totalAmount': '订单总额',
+  'pages.dashboard.totalOrders': '订单总数',
+  'pages.dashboard.userTrend': '用户注册趋势',
+  'pages.dashboard.orderStats': '订单统计',
+  'pages.dashboard.topProducts': '热销商品 TOP10',
   'pages.layouts.userLayout.title':
     'Ant Design 是西湖区最具影响力的 Web 设计规范',
   'pages.login.accountLogin.tab': '账户密码登录',
