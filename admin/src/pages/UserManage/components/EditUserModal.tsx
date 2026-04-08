@@ -1,13 +1,15 @@
 import { FormattedMessage } from '@umijs/max';
 import { Modal, Form, Select, Radio, Space, Tag } from 'antd';
 import type { UserItem } from '@/services/ant-design-pro/userManage';
-import { getRoleConfig, getRoleOptions } from '../config/roles';
+import type { Role } from '@/services/ant-design-pro/role';
+import { getRoleConfig } from '../config/roles';
 
 const { Option } = Select;
 
 interface EditUserModalProps {
   visible: boolean;
   user: UserItem | null;
+  roleList: Role[];
   onCancel: () => void;
   onOk: (values: { role: string; status: number }) => void;
   loading?: boolean;
@@ -16,6 +18,7 @@ interface EditUserModalProps {
 const EditUserModal: React.FC<EditUserModalProps> = ({
   visible,
   user,
+  roleList,
   onCancel,
   onOk,
   loading,
@@ -40,7 +43,17 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
     });
   }
 
-  const roleOptions = getRoleOptions();
+  // 只显示启用的角色
+  const enabledRoles = roleList.filter((role) => role.status === 1);
+
+  // 获取角色显示信息（优先使用 roleList，否则使用本地配置）
+  const getUserRoleDisplay = (roleCode: string) => {
+    const role = roleList.find((r) => r.code === roleCode);
+    if (role) {
+      return { color: 'blue', text: role.name };
+    }
+    return getRoleConfig(roleCode);
+  };
 
   return (
     <Modal
@@ -57,8 +70,8 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
             <div>
               <strong>用户名：</strong>
               {user.username}
-              <Tag color={getRoleConfig(user.role).color} style={{ marginLeft: 8 }}>
-                {getRoleConfig(user.role).text}
+              <Tag color={getUserRoleDisplay(user.role).color} style={{ marginLeft: 8 }}>
+                {getUserRoleDisplay(user.role).text}
               </Tag>
               {user.status === 0 && (
                 <Tag color="red">
@@ -95,10 +108,10 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
           name="role"
           rules={[{ required: true, message: '请选择角色' }]}
         >
-          <Select placeholder="请选择角色">
-            {roleOptions.map((option) => (
-              <Option key={option.value} value={option.value}>
-                <Tag color={option.color}>{option.label}</Tag>
+          <Select placeholder="请选择角色" loading={roleList.length === 0}>
+            {enabledRoles.map((role) => (
+              <Option key={role.code} value={role.code}>
+                <Tag color="blue">{role.name}</Tag>
               </Option>
             ))}
           </Select>

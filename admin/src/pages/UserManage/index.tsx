@@ -2,7 +2,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { useRequest, FormattedMessage, history } from '@umijs/max';
 import { Button, Input, Select, Space, Tag, message, Popconfirm } from 'antd';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import type { Dayjs } from 'dayjs';
 import { DatePicker } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
@@ -13,6 +13,7 @@ import {
   deleteUser,
 } from '@/services/ant-design-pro/userManage';
 import type { UserItem, UserParams } from '@/services/ant-design-pro/userManage';
+import { getAllRoles, type Role } from '@/services/ant-design-pro/role';
 import EditUserModal from './components/EditUserModal';
 import { getRoleConfig, getRoleValueEnum } from './config/roles';
 
@@ -24,6 +25,14 @@ const UserManage: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<UserItem[]>([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserItem | null>(null);
+  const [roleList, setRoleList] = useState<Role[]>([]);
+
+  // 获取角色列表
+  const { loading: loadingRoles } = useRequest(getAllRoles, {
+    onSuccess: (data: unknown) => {
+      setRoleList((data as Role[]) || []);
+    },
+  });
 
   const { run: updateRole, loading: updateRoleLoading } = useRequest(updateUserRole, {
     manual: true,
@@ -124,8 +133,16 @@ const UserManage: React.FC = () => {
       title: <FormattedMessage id="pages.userManage.role" defaultMessage="角色" />,
       dataIndex: 'role',
       valueType: 'select',
-      valueEnum: getRoleValueEnum(),
+      valueEnum: roleList.reduce((acc, role) => {
+        acc[role.code] = { text: role.name, status: role.status === 1 ? 'Success' : 'Error' };
+        return acc;
+      }, {} as Record<string, { text: string; status: string }>),
       render: (_, record) => {
+        const role = roleList.find((r) => r.code === record.role);
+        if (role) {
+          return <Tag color={role.status === 1 ? 'blue' : 'default'}>{role.name}</Tag>;
+        }
+        // 如果找不到角色配置，使用本地默认配置
         const config = getRoleConfig(record.role);
         return <Tag color={config.color}>{config.text}</Tag>;
       },
@@ -215,6 +232,7 @@ const UserManage: React.FC = () => {
       <EditUserModal
         visible={editModalVisible}
         user={currentUser}
+        roleList={roleList}
         onCancel={handleModalCancel}
         onOk={handleModalOk}
         loading={updateRoleLoading || toggleStatusLoading}

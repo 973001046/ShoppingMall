@@ -202,12 +202,14 @@ export default {
 
   // 获取所有角色（不分页）
   'GET /api/roles/all': (_req: Request, res: Response) => {
-    res.json(roles.map((role) => ({
-      id: role.id,
-      name: role.name,
-      code: role.code,
-      status: role.status,
-    })));
+    res.json({
+      data: roles.map((role) => ({
+        id: role.id,
+        name: role.name,
+        code: role.code,
+        status: role.status,
+      })),
+    });
   },
 
   // 创建角色
