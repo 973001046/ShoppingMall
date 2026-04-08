@@ -29,12 +29,6 @@ export default [
     component: './Dashboard',
   },
   {
-    path: '/welcome',
-    name: 'welcome',
-    icon: 'smile',
-    component: './Welcome',
-  },
-  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
@@ -52,14 +46,22 @@ export default [
     ],
   },
   {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './table-list',
+    path: '/user-manage',
+    name: 'user-manage',
+    icon: 'user',
+    access: 'canAdmin',
+    component: './UserManage',
+  },
+  {
+    path: '/role-manage',
+    name: 'role-manage',
+    icon: 'safety',
+    access: 'canAdmin',
+    component: './RoleManage',
   },
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/dashboard',
   },
   {
     path: '*',

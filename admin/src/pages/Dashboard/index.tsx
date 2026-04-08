@@ -7,13 +7,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as echarts from 'echarts';
 import {
   getUserRegistrationStats,
-  getOrderStats,
+  getOrderAmountStats,
+  getOrderCountStats,
   getTopSellingProducts,
 } from '@/services/ant-design-pro/dashboard';
 import type { ECharts } from 'echarts';
 import type {
   UserRegistrationStats,
-  OrderStats,
+  OrderAmountStats,
+  OrderCountStats,
   ProductSalesStats,
 } from '@/services/ant-design-pro/dashboard';
 
@@ -21,11 +23,13 @@ const { RangePicker } = DatePicker;
 
 const Dashboard: React.FC = () => {
   const userChartRef = useRef<HTMLDivElement>(null);
-  const orderChartRef = useRef<HTMLDivElement>(null);
+  const orderAmountChartRef = useRef<HTMLDivElement>(null);
+  const orderCountChartRef = useRef<HTMLDivElement>(null);
   const productChartRef = useRef<HTMLDivElement>(null);
 
   const userChartInstance = useRef<ECharts | null>(null);
-  const orderChartInstance = useRef<ECharts | null>(null);
+  const orderAmountChartInstance = useRef<ECharts | null>(null);
+  const orderCountChartInstance = useRef<ECharts | null>(null);
   const productChartInstance = useRef<ECharts | null>(null);
 
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs]>([
@@ -33,21 +37,28 @@ const Dashboard: React.FC = () => {
     dayjs(),
   ]);
 
-  const { data: userStatsRaw } = useRequest(async () => {
+  const { data: userStatsRes } = useRequest(async () => {
     return getUserRegistrationStats({
       startDate: dateRange[0].format('YYYY-MM-DD'),
       endDate: dateRange[1].format('YYYY-MM-DD'),
     });
   }, { refreshDeps: [dateRange] });
 
-  const { data: orderStatsRaw } = useRequest(async () => {
-    return getOrderStats({
+  const { data: orderAmountRes } = useRequest(async () => {
+    return getOrderAmountStats({
       startDate: dateRange[0].format('YYYY-MM-DD'),
       endDate: dateRange[1].format('YYYY-MM-DD'),
     });
   }, { refreshDeps: [dateRange] });
 
-  const { data: productStatsRaw } = useRequest(async () => {
+  const { data: orderCountRes } = useRequest(async () => {
+    return getOrderCountStats({
+      startDate: dateRange[0].format('YYYY-MM-DD'),
+      endDate: dateRange[1].format('YYYY-MM-DD'),
+    });
+  }, { refreshDeps: [dateRange] });
+
+  const { data: productStatsRes } = useRequest(async () => {
     return getTopSellingProducts({
       startDate: dateRange[0].format('YYYY-MM-DD'),
       endDate: dateRange[1].format('YYYY-MM-DD'),
@@ -55,17 +66,21 @@ const Dashboard: React.FC = () => {
     });
   }, { refreshDeps: [dateRange] });
 
-  const userStats = (userStatsRaw || []) as UserRegistrationStats[];
-  const orderStats = (orderStatsRaw || []) as OrderStats[];
-  const productStats = (productStatsRaw || []) as ProductSalesStats[];
+  const userStats: UserRegistrationStats[] = (userStatsRes as any) || [];
+  const orderAmountStats: OrderAmountStats[] = (orderAmountRes as any) || [];
+  const orderCountStats: OrderCountStats[] = (orderCountRes as any) || [];
+  const productStats: ProductSalesStats[] = (productStatsRes as any) || [];
 
   // 初始化图表
   useEffect(() => {
     if (userChartRef.current && !userChartInstance.current) {
       userChartInstance.current = echarts.init(userChartRef.current);
     }
-    if (orderChartRef.current && !orderChartInstance.current) {
-      orderChartInstance.current = echarts.init(orderChartRef.current);
+    if (orderAmountChartRef.current && !orderAmountChartInstance.current) {
+      orderAmountChartInstance.current = echarts.init(orderAmountChartRef.current);
+    }
+    if (orderCountChartRef.current && !orderCountChartInstance.current) {
+      orderCountChartInstance.current = echarts.init(orderCountChartRef.current);
     }
     if (productChartRef.current && !productChartInstance.current) {
       productChartInstance.current = echarts.init(productChartRef.current);
@@ -73,10 +88,12 @@ const Dashboard: React.FC = () => {
 
     return () => {
       userChartInstance.current?.dispose();
-      orderChartInstance.current?.dispose();
+      orderAmountChartInstance.current?.dispose();
+      orderCountChartInstance.current?.dispose();
       productChartInstance.current?.dispose();
       userChartInstance.current = null;
-      orderChartInstance.current = null;
+      orderAmountChartInstance.current = null;
+      orderCountChartInstance.current = null;
       productChartInstance.current = null;
     };
   }, []);
@@ -127,16 +144,17 @@ const Dashboard: React.FC = () => {
     }
   }, [userStats]);
 
-  // 更新订单统计图
+  // 更新订单金额趋势图
   useEffect(() => {
-    if (orderChartInstance.current && orderStats.length > 0) {
+    if (orderAmountChartInstance.current && orderAmountStats.length > 0) {
       const option: echarts.EChartsOption = {
         tooltip: {
           trigger: 'axis',
-          axisPointer: { type: 'cross' },
-        },
-        legend: {
-          data: ['订单金额', '订单数量'],
+          axisPointer: { type: 'shadow' },
+          formatter: (params: any) => {
+            const data = params[0];
+            return `${data.name}<br/>订单金额: ¥${data.value.toLocaleString()}`;
+          },
         },
         grid: {
           left: '3%',
@@ -146,44 +164,84 @@ const Dashboard: React.FC = () => {
         },
         xAxis: {
           type: 'category',
-          data: orderStats.map((item) => item.date),
+          data: orderAmountStats.map((item) => item.date),
           axisLabel: {
             rotate: 45,
             formatter: (value: string) => value.slice(5),
           },
         },
-        yAxis: [
-          {
-            type: 'value',
-            name: '订单金额(元)',
-            position: 'left',
+        yAxis: {
+          type: 'value',
+          name: '订单金额(元)',
+          axisLabel: {
+            formatter: (value: number) => `¥${value.toLocaleString()}`,
           },
-          {
-            type: 'value',
-            name: '订单数量',
-            position: 'right',
-          },
-        ],
+        },
         series: [
           {
             name: '订单金额',
             type: 'line',
             smooth: true,
-            data: orderStats.map((item) => item.amount),
+            data: orderAmountStats.map((item) => item.amount),
             itemStyle: { color: '#52c41a' },
-          },
-          {
-            name: '订单数量',
-            type: 'bar',
-            yAxisIndex: 1,
-            data: orderStats.map((item) => item.count),
-            itemStyle: { color: '#faad14' },
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: 'rgba(82,196,26,0.3)' },
+                { offset: 1, color: 'rgba(82,196,26,0.05)' },
+              ]),
+            },
           },
         ],
       };
-      orderChartInstance.current.setOption(option);
+      orderAmountChartInstance.current.setOption(option);
     }
-  }, [orderStats]);
+  }, [orderAmountStats]);
+
+  // 更新订单数量趋势图
+  useEffect(() => {
+    if (orderCountChartInstance.current && orderCountStats.length > 0) {
+      const option: echarts.EChartsOption = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {
+          type: 'category',
+          data: orderCountStats.map((item) => item.date),
+          axisLabel: {
+            rotate: 45,
+            formatter: (value: string) => value.slice(5),
+          },
+        },
+        yAxis: {
+          type: 'value',
+          name: '订单数量',
+        },
+        series: [
+          {
+            name: '订单数量',
+            type: 'line',
+            smooth: true,
+            data: orderCountStats.map((item) => item.count),
+            itemStyle: { color: '#faad14' },
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: 'rgba(250,173,20,0.3)' },
+                { offset: 1, color: 'rgba(250,173,20,0.05)' },
+              ]),
+            },
+          },
+        ],
+      };
+      orderCountChartInstance.current.setOption(option);
+    }
+  }, [orderCountStats]);
 
   // 更新商品销量图
   useEffect(() => {
@@ -235,7 +293,8 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       userChartInstance.current?.resize();
-      orderChartInstance.current?.resize();
+      orderAmountChartInstance.current?.resize();
+      orderCountChartInstance.current?.resize();
       productChartInstance.current?.resize();
     };
     window.addEventListener('resize', handleResize);
@@ -243,8 +302,8 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const totalUsers = userStats.reduce((sum, item) => sum + item.count, 0);
-  const totalAmount = orderStats.reduce((sum, item) => sum + item.amount, 0);
-  const totalOrders = orderStats.reduce((sum, item) => sum + item.count, 0);
+  const totalAmount = orderAmountStats.reduce((sum, item) => sum + item.amount, 0);
+  const totalOrders = orderCountStats.reduce((sum, item) => sum + item.count, 0);
 
   return (
     <PageContainer
@@ -297,14 +356,25 @@ const Dashboard: React.FC = () => {
       </Row>
 
       <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
-        <Col xs={24} lg={12}>
+        <Col span={24}>
           <Card title="用户注册趋势" bordered={false}>
-            <div ref={userChartRef} style={{ width: '100%', height: 300 }} />
+            <div ref={userChartRef} style={{ width: '100%', height: 350 }} />
           </Card>
         </Col>
-        <Col xs={24} lg={12}>
-          <Card title="订单统计" bordered={false}>
-            <div ref={orderChartRef} style={{ width: '100%', height: 300 }} />
+      </Row>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+        <Col span={24}>
+          <Card title="订单金额趋势" bordered={false}>
+            <div ref={orderAmountChartRef} style={{ width: '100%', height: 350 }} />
+          </Card>
+        </Col>
+      </Row>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+        <Col span={24}>
+          <Card title="订单数量趋势" bordered={false}>
+            <div ref={orderCountChartRef} style={{ width: '100%', height: 350 }} />
           </Card>
         </Col>
       </Row>

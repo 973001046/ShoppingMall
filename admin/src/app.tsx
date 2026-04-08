@@ -65,10 +65,10 @@ export const layout: RunTimeLayoutConfig = ({
   setInitialState,
 }) => {
   return {
-    actionsRender: () => [
-      <Question key="doc" />,
-      <SelectLang key="SelectLang" />,
-    ],
+    // actionsRender: () => [
+    //   <Question key="doc" />,
+    //   <SelectLang key="SelectLang" />,
+    // ],
     title: '咖啡小站',
     avatarProps: {
       src: initialState?.currentUser?.avatar,
