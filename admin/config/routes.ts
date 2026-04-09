@@ -43,6 +43,13 @@ export default [
     component: './RoleManage',
   },
   {
+    path: '/permission-manage',
+    name: 'permission-manage',
+    icon: 'key',
+    access: 'canAdmin',
+    component: './PermissionManage',
+  },
+  {
     path: '/',
     redirect: '/dashboard',
   },

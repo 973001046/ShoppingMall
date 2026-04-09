@@ -45,6 +45,7 @@ export default {
   'menu.account.logout': 'Logout',
   'menu.user-manage': 'User Management',
   'menu.role-manage': 'Role Management',
+  'menu.permission-manage': 'Permission Management',
   'menu.editor': 'Graphic Editor',
   'menu.editor.flow': 'Flow Editor',
   'menu.editor.mind': 'Mind Editor',

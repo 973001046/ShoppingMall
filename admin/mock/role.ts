@@ -323,6 +323,7 @@ export default {
     if (!role) {
       res.status(404).json({
         success: false,
+        data: [],
         message: '角色不存在',
       });
       return;
@@ -330,7 +331,7 @@ export default {
 
     res.json({
       success: true,
-      data: role.permissions || [],
+      data: ['1', '1-1', '1-1-1', '1-1-2', '1-2', '1-2-1'],
     });
   },
 

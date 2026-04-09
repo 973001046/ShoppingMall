@@ -45,6 +45,7 @@ export default {
   'menu.account.logout': '退出登录',
   'menu.user-manage': '用户管理',
   'menu.role-manage': '角色管理',
+  'menu.permission-manage': '权限管理',
   'menu.editor': '图形编辑器',
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',

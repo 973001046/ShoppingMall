@@ -6,9 +6,11 @@ import * as api from './api';
 import * as login from './login';
 import * as dashboard from './dashboard';
 import * as userManage from './userManage';
+import * as permission from './permission';
 export default {
   api,
   login,
   dashboard,
   userManage,
+  permission,
 };
