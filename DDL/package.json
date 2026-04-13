@@ -1,0 +1,33 @@
+{
+  "name": "shopping-mall-ddl",
+  "version": "1.0.0",
+  "description": "数据库DDL管理工具 - 支持迁移、种子数据和版本控制",
+  "main": "cli.js",
+  "scripts": {
+    "db:create": "node cli.js create",
+    "db:migrate": "node cli.js migrate",
+    "db:migrate:undo": "node cli.js migrate:undo",
+    "db:seed": "node cli.js seed",
+    "db:seed:undo": "node cli.js seed:undo",
+    "db:reset": "node cli.js reset",
+    "db:status": "node cli.js status",
+    "db:sync": "node cli.js sync",
+    "migration:create": "node cli.js migration:create",
+    "seed:create": "node cli.js seed:create"
+  },
+  "keywords": [
+    "mysql",
+    "ddl",
+    "migration",
+    "database"
+  ],
+  "author": "",
+    "license": "MIT",
+  "dependencies": {
+    "mysql2": "^3.6.5",
+    "dotenv": "^16.3.1",
+    "commander": "^11.1.0",
+    "chalk": "^4.1.2",
+    "dayjs": "^1.11.10"
+  }
+}

@@ -8,4 +8,5 @@
 project-root/
 ├── client/          # C端小程序（Taro + Taro UI）
 ├── admin/           # B端管理系统（Ant Design Pro）
-└── server/          # 后端API服务（Koa.js + MySQL）
+├── server/          # 后端API服务（Koa.js + MySQL）
+└── DDL/             # 数据库设计描述（nodejs + DDL + mysql + ssh）

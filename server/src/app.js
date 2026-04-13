@@ -105,9 +105,7 @@ async function startServer() {
 }
 
 // 启动服务
-// startServer().catch(err => {
-//   logger.error('服务启动失败', err);
-//   process.exit(1);
-// });
-
-console.log(process.env);
+startServer().catch(err => {
+  logger.error('服务启动失败', err);
+  process.exit(1);
+});
