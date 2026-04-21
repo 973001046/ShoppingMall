@@ -38,7 +38,7 @@ const config = {
   // JWT配置
   jwt: {
     secret: process.env.JWT_SECRET || 'default_secret_key',
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+    expiresIn: (process.env.SERVICE === 'client' ? process.env.JWT_EXPIRES_IN_CLIENT : process.env.JWT_EXPIRES_IN_ADMIN) || '7d'
   },
 
   // 环境配置

@@ -34,9 +34,8 @@ router.post('/login', async (ctx) => {
       return;
     }
 
-    // 验证密码（开发阶段使用明文比较，生产环境使用bcrypt）
-    // const isValid = await bcrypt.compare(password, admin.password);
-    const isValid = password === admin.password; // 开发阶段简化
+    // 统一使用 bcrypt 校验（开发/测试/生产保持一致）
+    const isValid = await bcrypt.compare(password, admin.password);
 
     if (!isValid) {
       ResponseUtil.error(ctx, '用户名或密码错误', 401, 200);
@@ -59,7 +58,6 @@ router.post('/login', async (ctx) => {
     ResponseUtil.success(ctx, {
       token,
       userInfo: {
-        id: admin.id,
         username: admin.username,
         realName: admin.realName,
         avatar: admin.avatar,

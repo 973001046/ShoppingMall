@@ -7,8 +7,8 @@ const { User, Admin } = require('../models');
  * 生成JWT Token
  */
 function generateToken(payload, type = 'client') {
-  const expiresIn = type === 'client' ? '7d' : '1d';
-  return jwt.sign(payload, config.jwt.secret, { expiresIn });
+  // const expiresIn = type === 'client' ? '7d' : '1d';
+  return jwt.sign(payload, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
 }
 
 /**
